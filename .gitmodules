@@ -1,0 +1,6 @@
+[submodule "frontend"]
+	path = frontend
+	url = https://github.com/shonk-software/corewar-frontend-react
+[submodule "backend"]
+	path = backend
+	url = https://github.com/shonk-software/corewar-backend-kotlin

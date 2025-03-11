@@ -1,0 +1,60 @@
+version: '3'
+
+includes:
+  frontend: 
+    taskfile: ./frontend/taskfile.yaml
+    dir: ./frontend
+  backend:
+    taskfile: ./backend/taskfile.yaml
+    dir: ./backend
+  e2e:
+    taskfile: ./e2e/taskfile.yaml
+    dir: ./e2e
+
+tasks:
+  setup:
+    deps: [frontend:setup, backend:setup]
+    cmds:
+      - python --version || echo "Python not found, please install it"
+      - pre-commit --version || python -m pip install pre-commit || echo "Pre-commit not found, please install it"
+      - pre-commit install --hook-type commit-msg --hook-type pre-commit --hook-type pre-push || python -m pre-commit install --hook-type commit-msg --hook-type pre-commit --hook-type pre-push
+  run:
+    deps: [frontend:run, backend:run]
+  build:
+    deps: [frontend:build, backend:build]
+  test:
+    cmds:
+      - task: frontend:test
+      - task: backend:test
+      - task: run-container-background
+      - task: e2e:test
+    cleanup: stop-container
+  lint:
+    deps: [frontend:lint]
+  format:
+    deps: [frontend:format, backend:format]
+  format-check: 
+    deps: [frontend:format-check, backend:format-check]
+  clean:
+    deps: [frontend:clean, backend:clean]
+  build-container:
+    deps: [build]
+    sources:
+      - Containerfile
+      - frontend/**
+      - backend/**
+      - misc/**
+    cmds:
+      - buildah build -t corewar . || docker build -t corewar -f Containerfile .
+  run-container:
+    deps: [build-container]
+    cmds:
+      - podman run -p 3000:80 --replace --name corewar corewar || docker run -p 3000:80 --name corewar corewar
+  run-container-background:
+    deps: [build-container]
+    cmds:
+      - podman run -d -p 3000:80 --replace --name corewar corewar || docker run -d -p 3000:80 --name corewar corewar
+  stop-container:
+    cmds:
+      - podman stop corewar || docker stop corewar || true
+
