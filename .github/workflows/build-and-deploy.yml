@@ -17,12 +17,12 @@ jobs:
       - name: Checkout code including submodules
         uses: actions/checkout@v4
         with:
-          submodules: 'recursive'
+          submodules: "recursive"
       - name: Set up JDK
         uses: actions/setup-java@v4
         with:
           java-version: ${{ env.JAVA_VERSION }}
-          distribution: 'temurin'
+          distribution: "temurin"
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v4
       - name: Run Format Check and Tests
@@ -36,7 +36,7 @@ jobs:
       - name: Checkout code including submodules
         uses: actions/checkout@v4
         with:
-          submodules: 'recursive'
+          submodules: "recursive"
       - uses: actions/setup-node@v4
         with:
           node-version: lts/*
@@ -76,12 +76,12 @@ jobs:
       - name: Checkout code including submodules
         uses: actions/checkout@v4
         with:
-          submodules: 'recursive'
+          submodules: "recursive"
       - name: Set up JDK
         uses: actions/setup-java@v4
         with:
           java-version: ${{ env.JAVA_VERSION }}
-          distribution: 'temurin'
+          distribution: "temurin"
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v4
       - name: Build
@@ -101,7 +101,7 @@ jobs:
       - name: Checkout code including submodules
         uses: actions/checkout@v4
         with:
-          submodules: 'recursive'
+          submodules: "recursive"
       - name: Download jar
         uses: actions/download-artifact@v4
         with:
@@ -137,7 +137,7 @@ jobs:
       - name: Checkout code including submodules
         uses: actions/checkout@v4
         with:
-          submodules: 'recursive'
+          submodules: "recursive"
       - uses: actions/setup-node@v4
         with:
           node-version: lts/*
@@ -181,6 +181,9 @@ jobs:
   upload:
     name: "Upload image to ghcr"
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
     needs: [build-container-image, e2e-tests]
     steps:
       - name: Download Imagefile
